@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>will you go on a date with me?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Jost:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#150910;
+    --bg2:#2B0F1D;
+    --card:#241119;
+    --ink:#F4E7DA;
+    --ink-soft:#C79E90;
+    --rose:#F43F6B;
+    --deep:#B21C4E;
+    --lilac:#8A63C9;
+    --lilac-deep:#5F3D9E;
+    --line:#3E1F2E;
+    --gold:#E3B04B;
+    --danger:#DC2643;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; } html{ color-scheme:dark; }
+  body{
+    font-family:'Jost', system-ui, sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 700px at 18% -12%, rgba(227,176,75,.10) 0%, transparent 55%),
+      radial-gradient(1000px 750px at 108% 112%, rgba(244,63,107,.14) 0%, transparent 55%),
+      radial-gradient(900px 600px at 50% 120%, var(--bg2) 0%, transparent 60%),
+      var(--bg);
+    min-height:100dvh;
+    overflow-x:hidden;
+  }
+  #shakeWrap{
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 16px 56px;
+  }
+  #shakeWrap.quake{ animation:quake .55s ease; }
+  @keyframes quake{
+    10%{ transform:translate(-9px,4px) rotate(-1deg); }
+    20%{ transform:translate(10px,-4px) rotate(1.2deg); }
+    30%{ transform:translate(-11px,3px) rotate(-1.4deg); }
+    40%{ transform:translate(10px,-2px) rotate(1deg); }
+    50%{ transform:translate(-8px,5px) rotate(-.8deg); }
+    60%{ transform:translate(8px,-4px) rotate(.9deg); }
+    70%{ transform:translate(-6px,2px) rotate(-.6deg); }
+    80%{ transform:translate(5px,-2px) rotate(.4deg); }
+    90%{ transform:translate(-3px,1px) rotate(-.2deg); }
+  }
+
+  /* floating petals */
+  .petal{
+    position:fixed;
+    font-size:20px;
+    opacity:.28;
+    pointer-events:none;
+    animation:drift linear infinite;
+    z-index:0;
+  }
+  @keyframes drift{
+    from{ transform:translateY(105vh) rotate(0deg); }
+    to{ transform:translateY(-10vh) rotate(180deg); }
+  }
+
+  .card{
+    position:relative;
+    z-index:2;
+    width:100%;
+    max-width:420px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:26px;
+    box-shadow:0 26px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(227,176,75,.10);
+    padding:36px 26px 30px;
+    text-align:center;
+  }
+
+  .screen{ display:none; animation:pop .35s ease both; }
+  .screen.active{ display:block; }
+  @keyframes pop{
+    from{ opacity:0; transform:translateY(10px) scale(.985); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .eyebrow{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:650;
+    font-size:clamp(24px, 6.4vw, 30px);
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  .sub{
+    font-size:15px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    margin-bottom:22px;
+  }
+  .tiny{ font-size:12px; }
+
+  .avatar{
+    width:104px; height:104px;
+    border-radius:50%;
+    margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:54px;
+    background:linear-gradient(145deg,#3A1626,#241119);
+    border:3px solid rgba(227,176,75,.35);
+    box-shadow:0 8px 20px rgba(244,63,107,.18);
+    overflow:hidden;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; }
+
+  .btn{
+    font-family:'Jost', sans-serif;
+    font-weight:800;
+    font-size:16px;
+    border:none;
+    border-radius:999px;
+    padding:14px 30px;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:focus-visible{ outline:3px solid var(--gold); outline-offset:3px; }
+  .btn:active{ transform:scale(.96); }
+  .btn.primary{
+    color:#fff;
+    background:linear-gradient(135deg, var(--rose), var(--deep));
+    box-shadow:0 10px 24px rgba(244,63,107,.35);
+  }
+  .btn.primary:hover{ filter:brightness(1.05); box-shadow:0 12px 28px rgba(244,63,107,.42); }
+  .btn.ghost{
+    color:#fff;
+    background:linear-gradient(135deg, var(--lilac), var(--lilac-deep));
+    box-shadow:0 8px 18px rgba(95,61,158,.45);
+  }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
+
+  .choices{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    align-items:center;
+    min-height:64px;
+  }
+  #yesBtn{ transition:transform .25s ease, box-shadow .18s ease; }
+  #noBtn, #sureYes{ transition:left .16s ease, top .16s ease, transform .16s ease; }
+
+  /* forms */
+  .field{ text-align:left; margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+  .field input, .field select, .field textarea{
+    width:100%;
+    font-family:'Jost', sans-serif;
+    font-size:16px;
+    color:var(--ink);
+    background:#2C1420;
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:13px 14px;
+    appearance:none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;
+    border-color:var(--rose);
+    box-shadow:0 0 0 3px rgba(244,63,107,.15);
+  }
+  .field textarea{ resize:none; }
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%23E3B04B' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+  }
+  .shake{ animation:shakeX .4s ease; }
+  @keyframes shakeX{
+    0%,100%{ transform:translateX(0); }
+    25%{ transform:translateX(-6px); }
+    75%{ transform:translateX(6px); }
+  }
+
+  /* tile grids */
+  .grid2{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .grid3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .tile{
+    background:#2C1420;
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:14px 8px 12px;
+    cursor:pointer;
+    transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    font-family:'Jost', sans-serif;
+  }
+  .tile .em{ font-size:30px; display:block; margin-bottom:5px; }
+  .tile .lb{ font-size:13.5px; font-weight:800; color:var(--ink); display:block; }
+  .tile .sb{ font-size:11px; font-weight:600; color:var(--ink-soft); display:block; margin-top:3px; line-height:1.35; }
+  .tile:hover{ transform:translateY(-2px); }
+  .tile:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .tile.selected{
+    border-color:var(--rose);
+    box-shadow:0 0 0 3px rgba(244,63,107,.18), 0 8px 18px rgba(244,63,107,.12);
+    background:#34182A;
+  }
+  .tile:disabled{ opacity:.35; cursor:not-allowed; }
+  .tile:disabled:hover{ transform:none; }
+  .tile.locked{ opacity:1; }
+
+  /* fee / contract */
+  .contract{
+    background:#2C1420;
+    border:1.5px dashed var(--line);
+    border-radius:16px;
+    padding:18px 16px;
+    margin-bottom:20px;
+    text-align:left;
+  }
+  .contract .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+    font-weight:800;
+  }
+  .contract .name{ font-size:15px; }
+  .price{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:24px;
+    color:var(--rose);
+    position:relative;
+    white-space:nowrap;
+  }
+  .price.slashed::after{
+    content:"";
+    position:absolute;
+    left:-4px; right:-4px; top:52%;
+    height:3px;
+    background:var(--deep);
+    border-radius:2px;
+    transform:rotate(-6deg);
+  }
+  .newprice{
+    display:none;
+    font-family:'Fraunces', Georgia, serif;
+    font-size:24px;
+    color:var(--gold);
+  }
+  .newprice.show{ display:inline; }
+  .fineprint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:8px;
+    line-height:1.5;
+  }
+  .jk{
+    display:none;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+    margin-top:12px;
+  }
+  .jk.show{ display:block; animation:pop .3s ease both; }
+
+  /* summary */
+  .summary{
+    background:linear-gradient(145deg,#34182A,#2A1220);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:18px 16px;
+    margin-bottom:18px;
+  }
+  .summary .big{
+    font-family:'Fraunces', Georgia, serif;
+    font-size:21px;
+    font-weight:650;
+    margin-bottom:5px;
+  }
+  .summary .mid{ font-size:15px; font-weight:700; color:var(--ink-soft); }
+  .ps{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    margin-top:16px;
+  }
+  .linkish{
+    display:inline-block;
+    margin-top:14px;
+    background:none;
+    border:none;
+    font-family:'Jost', sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-decoration:underline;
+    cursor:pointer;
+  }
+
+  .badge{
+    position:fixed;
+    bottom:14px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:#241119;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 14px;
+    z-index:3;
+    box-shadow:0 4px 12px rgba(244,63,107,.08);
+  }
+
+  #confetti{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:50;
+  }
+
+  /* WRONG ANSWER overlay */
+  #wrong{
+    position:fixed;
+    inset:0;
+    z-index:60;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:rgba(220,38,67,.93);
+    color:#fff;
+    text-align:center;
+    padding:24px;
+    opacity:0;
+    pointer-events:none;
+    transform:scale(1.06);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  #wrong.show{ opacity:1; transform:scale(1); }
+  .wbig{
+    font-family:'Fraunces', Georgia, serif;
+    font-weight:650;
+    font-size:clamp(34px, 10vw, 56px);
+    line-height:1.1;
+    text-shadow:0 4px 24px rgba(0,0,0,.25);
+  }
+  .wsub{ font-size:16px; font-weight:800; opacity:.95; }
+
+  /* naughty popup */
+  #naughty{
+    position:fixed;
+    inset:0;
+    z-index:60;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(150deg, rgba(95,61,158,.96), rgba(244,63,107,.94));
+    color:#fff;
+    text-align:center;
+    padding:24px;
+    opacity:0;
+    pointer-events:none;
+    transform:scale(1.06);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  #naughty.show{ opacity:1; transform:scale(1); }
+
+  .tile.wide{ grid-column:1 / -1; }
+  .hiddenField{ display:none !important; }
+
+  /* schedule-check bits */
+  .stack{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    align-items:center;
+  }
+  .stack .btn{ min-width:230px; }
+  .avatar.pulse{ animation:pulse 1.1s ease infinite; }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.1); }
+  }
+  .dotty{ font-size:18px; color:var(--gold); letter-spacing:6px; margin-top:4px; }
+  .dotty span{ animation:blink 1.2s infinite; }
+  .dotty span:nth-child(2){ animation-delay:.2s; }
+  .dotty span:nth-child(3){ animation-delay:.4s; }
+  @keyframes blink{
+    0%,60%,100%{ opacity:.25; }
+    30%{ opacity:1; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .petal{ display:none; }
+    .screen, .btn, .tile, #noBtn, #yesBtn, #sureYes, #shakeWrap, .avatar.pulse, .dotty span{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div id="wrong" role="alert">
+  <div class="wbig" id="wrongBig">WRONG ANSWER ❌</div>
+  <div class="wsub" id="wrongSub">try again.</div>
+</div>
+
+<div id="naughty" role="alert">
+  <div class="wbig">you naughty girl, you 😏</div>
+  <div class="wsub">noted. adding it to the agenda 📝</div>
+</div>
+
+<div id="shakeWrap">
+<div class="card" id="card">
+
+  <!-- 1 · the question -->
+  <section class="screen active" data-screen="ask">
+    <div class="eyebrow">an important question ↓</div>
+    <div class="avatar" id="avatar">😏</div>
+    <h1>💋 will you go on a date with me? 💋</h1>
+    <p class="sub">take your time. no pressure. (there is pressure.)</p>
+    <div class="choices">
+      <button class="btn primary" id="yesBtn">YES ♥</button>
+      <button class="btn ghost" id="noBtn">no</button>
+    </div>
+  </section>
+
+  <!-- fallback if the ask-page no somehow gets clicked -->
+  <section class="screen" data-screen="caught">
+    <div class="avatar">🥲</div>
+    <h1>hm. that button seems broken.</h1>
+    <p class="sub">weird. tech issue probably. try the other one.</p>
+    <button class="btn primary" data-next="shock">YES ♥</button>
+  </section>
+
+  <!-- 2 · shock -->
+  <section class="screen" data-screen="shock">
+    <div class="avatar">😭</div>
+    <h1>WAIT. you actually said yes??</h1>
+    <p class="sub">I was so ready for you to say no. I had a whole speech.</p>
+    <button class="btn primary" data-next="sure">I said what I said →</button>
+  </section>
+
+  <!-- 3 · are you SURE -->
+  <section class="screen" data-screen="sure">
+    <div class="avatar">🤨</div>
+    <h1>okay but are you <em>SURE</em> sure?</h1>
+    <p class="sub">this decision is final and legally binding.<br /><span class="tiny">(it is not. but still.)</span></p>
+    <div class="choices">
+      <button class="btn primary" id="sureYes">yes I'm sure ♥</button>
+      <button class="btn ghost" id="sureNo">no</button>
+    </div>
+  </section>
+
+  <!-- 4 · what kind of date -->
+  <section class="screen" data-screen="type">
+    <h1>what are we doing? 💭</h1>
+    <p class="sub">choose wisely. this is a personality test.</p>
+    <div class="grid2" id="typeGrid"></div>
+    <div class="field hiddenField" id="otherWrap">
+      <label for="spiceSel">other… meaning what, exactly? 🤨</label>
+      <select id="spiceSel"></select>
+    </div>
+    <div class="field hiddenField" id="chaletWrap">
+      <label for="chaletSel">chalet meaning…? 🏖️</label>
+      <select id="chaletSel"></select>
+    </div>
+    <div class="hiddenField" id="skipWrap">
+      <button class="linkish" id="noPartTwoBtn" style="margin:0 0 12px;">I don't want a part two 🙅‍♀️</button>
+      <div class="field hiddenField" id="excuseWrap">
+        <label for="excuseInput">explain yourself. 📝</label>
+        <textarea id="excuseInput" rows="2" maxlength="120" placeholder="(this better be good)"></textarea>
+        <button class="btn primary" id="excuseBtn" style="margin-top:12px;">submit my excuse</button>
+      </div>
+    </div>
+    <button class="btn primary" id="typeBtn" disabled>that one →</button>
+  </section>
+
+  <!-- 4b · the excuse -->
+  <section class="screen" data-screen="excused">
+    <div class="avatar">📋</div>
+    <h1>excuse received.</h1>
+    <p class="sub" id="excuseEcho">"…"</p>
+    <p class="sub">forwarded to HR for review. fine. ONE activity. this time. 😤</p>
+    <button class="btn primary" data-next="date">proceed →</button>
+  </section>
+
+  <!-- 5 · pick a day -->
+  <section class="screen" data-screen="date">
+    <h1>so… when are you free? 📅🐾</h1>
+    <p class="sub">pick a day. any day. today also works. just saying.</p>
+    <div class="field">
+      <label for="dayInput">pick a day 🗓️</label>
+      <input type="date" id="dayInput" />
+    </div>
+    <div class="field">
+      <label for="timeInput">what time? ⏰</label>
+      <select id="timeInput"></select>
+    </div>
+    <button class="btn primary" id="setDateBtn">set the date ♥</button>
+  </section>
+
+  <!-- 5b · checking the schedule -->
+  <section class="screen" data-screen="checking">
+    <div class="avatar pulse">☎️</div>
+    <h1 id="checkLine">contacting my secretary…</h1>
+    <p class="sub">please hold. very important business happening.</p>
+    <p class="dotty"><span>●</span><span>●</span><span>●</span></p>
+  </section>
+
+  <!-- 5c · the verdict -->
+  <section class="screen" data-screen="busy">
+    <div class="avatar">😬</div>
+    <h1 id="busyTitle">yeahhh… I'm busy that day.</h1>
+    <p class="sub" id="busySub">(I am not busy. I have never been busy.)</p>
+    <div class="stack">
+      <button class="btn primary" id="insistBtn">I INSIST 😤</button>
+      <button class="btn ghost" id="retryDateBtn">fine, I'll pick another day 🙄</button>
+    </div>
+  </section>
+
+  <!-- 5d · the cave-in -->
+  <section class="screen" data-screen="caved">
+    <div class="avatar">😮‍💨</div>
+    <h1>okay, okay. if you insist.</h1>
+    <p class="sub">cancelling my very real, very important plans. the things I do for you.</p>
+    <button class="btn primary" id="cavedBtn">as you should 💅</button>
+  </section>
+
+  <!-- 6 · food -->
+  <section class="screen" data-screen="food">
+    <h1>and what are we eating? 🍽️✨</h1>
+    <p class="sub">pick your vibe 😌</p>
+    <div class="grid3" id="foodGrid"></div>
+    <button class="btn primary" id="foodBtn" disabled>lock it in 😮‍💨</button>
+  </section>
+
+  <!-- 7 · the fee -->
+  <section class="screen" data-screen="fee">
+    <h1>one small fee 🧾</h1>
+    <p class="sub">to confirm your acceptance of this date, please complete the following transaction. totally normal. everyone does this.</p>
+    <div class="contract">
+      <div class="row">
+        <span class="name">Date Agreement™</span>
+        <span>
+          <span class="price" id="price">KD 499.000</span>
+          <span class="newprice" id="newPrice">KD 0.000</span>
+        </span>
+      </div>
+      <p class="fineprint">one-time fee · non-refundable · absolutely made up<br />includes: good company, snacks, door-to-door service 🚗</p>
+      <p class="jk" id="jk">jk — you already paid by saying yes 🥹</p>
+    </div>
+    <button class="btn primary" id="payBtn">pay KD 499 &amp; confirm 😌</button>
+  </section>
+
+  <!-- 8 · it's a date -->
+  <section class="screen" data-screen="done">
+    <div class="avatar">🥂</div>
+    <h1>it's a date.</h1>
+    <div class="summary">
+      <div class="big" id="sumType">—</div>
+      <div class="mid" id="sumWhen">—</div>
+      <div class="mid" id="sumFood">—</div>
+      <div class="mid" id="sumNote"></div>
+    </div>
+    <p class="sub" id="pickup">be ready. I'm coming to get you 🚗</p>
+    <button class="btn primary" id="shotBtn">screenshot &amp; text it back 📸</button>
+    <p class="ps">P.S. normal people text. I built you a website instead. no big deal.</p>
+    <button class="linkish" id="restartBtn">start over</button>
+  </section>
+
+</div>
+</div>
+
+<div class="badge">made during a lunch break™</div>
+
+<script>
+/* ══════════ customize me ══════════ */
+const CONFIG = {
+  photoUrl: "",        // paste an image URL here, or leave "" to keep the emoji
+  photoEmoji: "😏",    // used when photoUrl is empty
+  earliestTime: 12,    // first pickup slot (24h)
+  latestTime: 20.5,    // last pickup slot (24h, .5 = half past)
+  defaultTime: "6:00 PM",
+  dateTypes: [
+    { em:"🏖️", lb:"Chalet date", sb:"you already know", chalet:true,
+      pickup:"be ready by {time}. the chalet is ready. allegedly 😏" },
+    { em:"🍽️", lb:"Restaurant", sb:"the good shirt is coming out", food:true,
+      pickup:"be ready by {time}. I'm wearing the good shirt. don't laugh." },
+    { em:"🎬", lb:"Cinema",     sb:"I get the armrest",
+      pickup:"be ready by {time}. I get the armrest. non-negotiable 🍿" },
+    { em:"🏎️", lb:"Go karting", sb:"prepare to lose",
+      pickup:"be ready by {time}. bring your ego — I'm taking it 🏁" },
+    { em:"☕", lb:"Grab coffee", sb:"and talk for 3 hours", casual:true,
+      pickup:"be ready by {time}. it's 'just coffee'. it is never just coffee ☕" },
+    { em:"👀", lb:"Other", sb:"use your imagination", other:true,
+      pickup:"be ready by {time}. I'm not putting the rest in writing 😏" },
+  ],
+  chalet: [
+    { v:"pool & chill 🏊", pickup:"be ready by {time}. bring a swimsuit. or don't 😏" },
+    { v:"movie & chill 🎬", pickup:"be ready by {time}. we both know we're not finishing that movie." },
+    { v:"food & chill 🔥", food:true, pickup:"be ready by {time}. I'm grilling. act impressed 🔥" },
+    { v:"other 👀", other:true, pickup:"be ready by {time}. I'm not putting the rest in writing 😏" },
+  ],
+  spice: [
+    "naughty sex",
+    "nasty sex",
+    "drunk sex",
+    "sex on the table",
+    "morning sex",
+    "all of the above 😈",
+  ],
+  foods: [
+    { em:"🍕", lb:"Pizza"   },
+    { em:"🍣", lb:"Sushi"   },
+    { em:"🍔", lb:"Burgers" },
+    { em:"🍝", lb:"Pasta"   },
+    { em:"🌮", lb:"Tacos"   },
+    { em:"🥙", lb:"Arabic"  },
+  ],
+  wrongAnswers: [
+    ["WRONG ANSWER ❌", "try again."],
+    ["STILL WRONG 😤", "the yes button is right there."],
+    ["…seriously? 💀", "ok now you're doing it on purpose."],
+    ["I can do this all day 🙂", "the button. press the other button."],
+  ],
+};
+/* ══════════════════════════════════ */
+
+const $ = (s) => document.querySelector(s);
+const state = { activity:null, addon:null, chalet:null, spice:null, excuse:null, day:null, time:null, food:null };
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* avatar */
+if (CONFIG.photoUrl) {
+  $("#avatar").innerHTML = '<img src="' + CONFIG.photoUrl + '" alt="me, hopeful" />';
+} else {
+  $("#avatar").textContent = CONFIG.photoEmoji;
+}
+
+/* screens */
+function show(name){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.querySelector('[data-screen="' + name + '"]').classList.add("active");
+}
+document.querySelectorAll("[data-next]").forEach(b =>
+  b.addEventListener("click", () => show(b.dataset.next))
+);
+
+/* petals */
+if (!reduced) {
+  const emojis = ["💋","✨","🥂","💫","💋"];
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement("span");
+    p.className = "petal";
+    p.textContent = emojis[i % emojis.length];
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.fontSize = 14 + Math.random() * 14 + "px";
+    p.style.animationDuration = 14 + Math.random() * 16 + "s";
+    p.style.animationDelay = -Math.random() * 20 + "s";
+    document.body.appendChild(p);
+  }
+}
+
+/* shared: make a button jump somewhere random on screen */
+function jump(btn){
+  if (btn.parentElement !== document.body) document.body.appendChild(btn);
+  const r = btn.getBoundingClientRect();
+  btn.style.position = "fixed";
+  btn.style.zIndex = 20;
+  const pad = 10;
+  const maxX = window.innerWidth - r.width - pad;
+  const maxY = window.innerHeight - r.height - pad;
+  btn.style.left = pad + Math.random() * Math.max(1, maxX - pad) + "px";
+  btn.style.top  = pad + Math.random() * Math.max(1, maxY - pad) + "px";
+}
+
+/* ── page 1: the runaway NO ── */
+const noBtn = $("#noBtn");
+const yesBtn = $("#yesBtn");
+let noDodges = 0;
+let lastNoDodge = 0;
+
+function dodgeNo(){
+  const now = Date.now();
+  if (now - lastNoDodge < 250) return;
+  lastNoDodge = now;
+  noDodges++;
+  jump(noBtn);
+  const shrink = Math.max(0.55, 1 - noDodges * 0.07);
+  noBtn.style.transform = "scale(" + shrink + ")";
+  yesBtn.style.transform = "scale(" + Math.min(1.45, 1 + noDodges * 0.06) + ")";
+  if (noDodges === 4) noBtn.textContent = "no?";
+  if (noDodges === 7) noBtn.textContent = "🥲";
+}
+noBtn.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") dodgeNo(); });
+noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); dodgeNo(); }, { passive:false });
+noBtn.addEventListener("click", () => {   /* keyboard users get the gag too */
+  noBtn.style.display = "none";
+  show("caught");
+});
+
+yesBtn.addEventListener("click", () => {
+  noBtn.style.display = "none";
+  burst();
+  show("shock");
+});
+
+/* ── page 3: are you SURE ──
+   the YES runs away twice, then lets you catch it.
+   the NO shakes the whole screen and yells at you. */
+const sureYes = $("#sureYes");
+const sureNo = $("#sureNo");
+let sureDodges = 0;
+let lastSureDodge = 0;
+let wrongCount = 0;
+let wrongTimer = null;
+
+function dodgeSureYes(){
+  const now = Date.now();
+  if (now - lastSureDodge < 250) return;
+  lastSureDodge = now;
+  sureDodges++;
+  jump(sureYes);
+  if (sureDodges === 1) sureYes.textContent = "nope, try again 😌";
+  if (sureDodges === 2) sureYes.textContent = "okay okay — click me 😮‍💨";
+}
+sureYes.addEventListener("pointerenter", (e) => {
+  if (e.pointerType === "mouse" && sureDodges < 2) dodgeSureYes();
+});
+sureYes.addEventListener("touchstart", (e) => {
+  if (sureDodges < 2) { e.preventDefault(); dodgeSureYes(); }
+}, { passive:false });
+sureYes.addEventListener("click", () => {
+  if (sureDodges < 2) { dodgeSureYes(); return; }
+  sureNo.style.display = "none";
+  sureYes.style.display = "none";
+  burst();
+  show("type");
+});
+
+sureNo.addEventListener("click", () => {
+  const pair = CONFIG.wrongAnswers[Math.min(wrongCount, CONFIG.wrongAnswers.length - 1)];
+  wrongCount++;
+  $("#wrongBig").textContent = pair[0];
+  $("#wrongSub").textContent = pair[1];
+  const overlay = $("#wrong");
+  overlay.classList.add("show");
+  if (navigator.vibrate) navigator.vibrate(180);
+  if (!reduced) {
+    const wrap = $("#shakeWrap");
+    wrap.classList.remove("quake"); void wrap.offsetWidth;
+    wrap.classList.add("quake");
+  }
+  clearTimeout(wrongTimer);
+  wrongTimer = setTimeout(() => overlay.classList.remove("show"), 1000);
+});
+
+/* ── date type ── */
+const typeGrid = $("#typeGrid");
+const otherWrap = $("#otherWrap");
+const spiceSel = $("#spiceSel");
+let naughtyTimer = null;
+
+const ph = document.createElement("option");
+ph.textContent = "select… 👀";
+ph.value = "";
+ph.disabled = true;
+ph.selected = true;
+spiceSel.appendChild(ph);
+CONFIG.spice.forEach(s => {
+  const o = document.createElement("option");
+  o.value = o.textContent = s;
+  spiceSel.appendChild(o);
+});
+
+const chaletWrap = $("#chaletWrap");
+const chaletSel = $("#chaletSel");
+const cph = document.createElement("option");
+cph.textContent = "select… 🏖️";
+cph.value = "";
+cph.disabled = true;
+cph.selected = true;
+chaletSel.appendChild(cph);
+CONFIG.chalet.forEach(c => {
+  const o = document.createElement("option");
+  o.value = o.textContent = c.v;
+  chaletSel.appendChild(o);
+});
+
+chaletSel.addEventListener("change", () => {
+  const opt = CONFIG.chalet.find(c => c.v === chaletSel.value);
+  state.chalet = opt;
+  state.spice = null;
+  if (opt.other) {
+    otherWrap.classList.remove("hiddenField");
+    spiceSel.selectedIndex = 0;
+    $("#typeBtn").disabled = true;
+  } else {
+    otherWrap.classList.add("hiddenField");
+    $("#typeBtn").disabled = false;
+  }
+});
+
+let typeRound = 1;
+
+CONFIG.dateTypes.forEach(t => {
+  const el = document.createElement("button");
+  el.type = "button";
+  el.className = "tile";
+  el.innerHTML = '<span class="em">' + t.em + '</span><span class="lb">' + t.lb + '</span><span class="sb">' + t.sb + "</span>";
+  t.el = el;
+  el.addEventListener("click", () => {
+    typeGrid.querySelectorAll(".tile").forEach(x => {
+      if (!x.classList.contains("locked")) x.classList.remove("selected");
+    });
+    el.classList.add("selected");
+    if (typeRound === 1) { state.activity = t; } else { state.addon = t; }
+    state.spice = null;
+    state.excuse = null;
+    state.chalet = null;
+    $("#excuseWrap").classList.add("hiddenField");
+    if (t.other) {
+      otherWrap.classList.remove("hiddenField");
+      chaletWrap.classList.add("hiddenField");
+      spiceSel.selectedIndex = 0;
+      $("#typeBtn").disabled = true;
+    } else if (t.chalet) {
+      chaletWrap.classList.remove("hiddenField");
+      otherWrap.classList.add("hiddenField");
+      chaletSel.selectedIndex = 0;
+      $("#typeBtn").disabled = true;
+    } else {
+      otherWrap.classList.add("hiddenField");
+      chaletWrap.classList.add("hiddenField");
+      $("#typeBtn").disabled = false;
+    }
+  });
+  typeGrid.appendChild(el);
+});
+
+function enterRoundTwo(){
+  typeRound = 2;
+  const sec = document.querySelector('[data-screen="type"]');
+  sec.querySelector("h1").textContent = "and after? 👀";
+  sec.querySelector(".sub").textContent = "every good plan has a part two. (unless you can explain yourself.)";
+  CONFIG.dateTypes.forEach(t => {
+    if (t === state.activity) {
+      t.el.disabled = true;
+      t.el.classList.add("locked");
+    } else if (t.casual) {
+      t.el.disabled = true;
+      t.el.classList.remove("selected");
+    } else {
+      t.el.disabled = false;
+      t.el.classList.remove("selected");
+    }
+  });
+  $("#skipWrap").classList.remove("hiddenField");
+  $("#typeBtn").disabled = true;
+}
+
+spiceSel.addEventListener("change", () => {
+  state.spice = spiceSel.value;
+  $("#typeBtn").disabled = false;
+  const ov = $("#naughty");
+  ov.classList.add("show");
+  if (navigator.vibrate) navigator.vibrate([80, 60, 80]);
+  clearTimeout(naughtyTimer);
+  naughtyTimer = setTimeout(() => ov.classList.remove("show"), 1600);
+});
+
+$("#typeBtn").addEventListener("click", () => {
+  if (typeRound === 1 && state.activity && !state.activity.casual && !state.activity.other && !state.activity.chalet) {
+    enterRoundTwo();
+    return;
+  }
+  show("date");
+});
+
+$("#noPartTwoBtn").addEventListener("click", () => {
+  typeGrid.querySelectorAll(".tile").forEach(x => {
+    if (!x.classList.contains("locked")) x.classList.remove("selected");
+  });
+  state.addon = null;
+  state.spice = null;
+  state.chalet = null;
+  otherWrap.classList.add("hiddenField");
+  chaletWrap.classList.add("hiddenField");
+  $("#typeBtn").disabled = true;
+  $("#excuseWrap").classList.remove("hiddenField");
+  $("#excuseInput").focus();
+});
+
+$("#excuseBtn").addEventListener("click", () => {
+  const box = $("#excuseInput");
+  const txt = box.value.trim();
+  if (txt.length < 2) {
+    box.classList.remove("shake"); void box.offsetWidth;
+    box.classList.add("shake");
+    box.focus();
+    return;
+  }
+  state.excuse = txt;
+  $("#excuseEcho").textContent = '"' + txt + '"';
+  show("excused");
+});
+
+/* ── date & time ── */
+const timeSel = $("#timeInput");
+for (let t = CONFIG.earliestTime; t <= CONFIG.latestTime; t += 0.5) {
+  const h24 = Math.floor(t);
+  const m = t % 1 ? "30" : "00";
+  const h12 = ((h24 + 11) % 12) + 1;
+  const label = h12 + ":" + m + " " + (h24 < 12 ? "AM" : "PM");
+  const o = document.createElement("option");
+  o.value = o.textContent = label;
+  if (label === CONFIG.defaultTime) o.selected = true;
+  timeSel.appendChild(o);
+}
+$("#dayInput").min = new Date().toISOString().slice(0, 10);
+
+$("#setDateBtn").addEventListener("click", () => {
+  const day = $("#dayInput");
+  if (!day.value) {
+    day.classList.remove("shake"); void day.offsetWidth;
+    day.classList.add("shake");
+    day.focus();
+    return;
+  }
+  state.day = day.value;
+  state.time = timeSel.value;
+  startScheduleCheck();
+});
+
+/* ── the secretary bit ──
+   round 1: busy. round 2: busy AGAIN. she has to insist. */
+const checkScripts = [
+  ["contacting my secretary… ☎️", "secretary says I'm a catch 💅", "cross-checking the calendar 📆"],
+  ["calling the secretary again… ☎️", "she is tired of me 😔", "triple-checking, hold on 📆"],
+];
+const busyLines = [
+  ["yeahhh… I'm busy that day. 😬", "(I am not busy. I have never been busy.)"],
+  ["busy that day TOO. I'm in demand 💅", "(the calendar is empty. it's SO empty. just insist.)"],
+];
+let busyRound = 0;
+let checkTimers = [];
+
+function startScheduleCheck(){
+  show("checking");
+  checkTimers.forEach(clearTimeout);
+  checkTimers = [];
+  const lines = checkScripts[Math.min(busyRound, checkScripts.length - 1)];
+  const el = $("#checkLine");
+  el.textContent = lines[0];
+  checkTimers.push(setTimeout(() => { el.textContent = lines[1]; }, 900));
+  checkTimers.push(setTimeout(() => { el.textContent = lines[2]; }, 1800));
+  checkTimers.push(setTimeout(() => {
+    const b = busyLines[Math.min(busyRound, busyLines.length - 1)];
+    $("#busyTitle").textContent = b[0];
+    $("#busySub").textContent = b[1];
+    $("#retryDateBtn").style.display = busyRound === 0 ? "" : "none";
+    if (navigator.vibrate) navigator.vibrate(60);
+    busyRound++;
+    show("busy");
+  }, 2700));
+}
+
+function needFood(){
+  return !!((state.activity && state.activity.food) || (state.addon && state.addon.food) || (state.chalet && state.chalet.food));
+}
+
+$("#retryDateBtn").addEventListener("click", () => show("date"));
+$("#insistBtn").addEventListener("click", () => show("caved"));
+$("#cavedBtn").addEventListener("click", () => show(needFood() ? "food" : "fee"));
+
+/* ── food ── */
+const grid = $("#foodGrid");
+CONFIG.foods.forEach(f => {
+  const t = document.createElement("button");
+  t.type = "button";
+  t.className = "tile";
+  t.innerHTML = '<span class="em">' + f.em + '</span><span class="lb">' + f.lb + "</span>";
+  t.addEventListener("click", () => {
+    grid.querySelectorAll(".tile").forEach(x => x.classList.remove("selected"));
+    t.classList.add("selected");
+    state.food = f;
+    $("#foodBtn").disabled = false;
+  });
+  grid.appendChild(t);
+});
+$("#foodBtn").addEventListener("click", () => show("fee"));
+
+/* ── the fee gag ── */
+let paid = false;
+$("#payBtn").addEventListener("click", () => {
+  if (!paid) {
+    paid = true;
+    $("#price").classList.add("slashed");
+    $("#newPrice").classList.add("show");
+    $("#jk").classList.add("show");
+    $("#payBtn").textContent = "continue →";
+  } else {
+    fillSummary();
+    burst();
+    show("done");
+  }
+});
+
+/* ── summary ── */
+function chaletBit(){
+  if (!state.chalet) return "";
+  return state.chalet.other && state.spice ? " · 👀 " + state.spice : " · " + state.chalet.v;
+}
+
+function comboLabel(){
+  const a = state.activity;
+  let s = a.other && state.spice ? a.em + " " + state.spice : a.em + " " + a.lb + (a.chalet ? chaletBit() : "");
+  if (state.addon) {
+    s += state.addon.other && state.spice
+      ? " + 👀 " + state.spice
+      : " + " + state.addon.em + " " + state.addon.lb + (state.addon.chalet ? chaletBit() : "");
+  }
+  return s;
+}
+
+function fillSummary(){
+  const d = new Date(state.day + "T12:00:00");
+  const nice = d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+  $("#sumType").textContent = comboLabel();
+  $("#sumWhen").textContent = nice + " · " + state.time;
+  if (needFood() && state.food) {
+    $("#sumFood").style.display = "";
+    $("#sumFood").textContent = state.food.em + " " + state.food.lb + " it is.";
+  } else {
+    $("#sumFood").style.display = "none";
+  }
+  if (state.excuse) {
+    $("#sumNote").style.display = "";
+    $("#sumNote").textContent = "no part two — \"" + state.excuse + "\" 🙄";
+  } else {
+    $("#sumNote").style.display = "none";
+  }
+  const pk = (state.activity.chalet && state.chalet) ? state.chalet.pickup : state.activity.pickup;
+  $("#pickup").textContent = pk.replace("{time}", state.time);
+}
+$("#shotBtn").addEventListener("click", burst);
+$("#restartBtn").addEventListener("click", () => location.reload());
+
+/* ── confetti ── */
+const cv = $("#confetti"), ctx = cv.getContext("2d");
+let parts = [], raf = null;
+function sizeCanvas(){ cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
+sizeCanvas();
+addEventListener("resize", sizeCanvas);
+
+function burst(){
+  if (reduced) return;
+  const colors = ["#F43F6B","#E3B04B","#F5E6D8","#8A63C9","#C11E52","#FFFFFF"];
+  for (let i = 0; i < 130; i++) {
+    parts.push({
+      x: cv.width / 2, y: cv.height * 0.35,
+      vx: (Math.random() - 0.5) * 18 * devicePixelRatio,
+      vy: (Math.random() * -14 - 4) * devicePixelRatio,
+      s: (4 + Math.random() * 5) * devicePixelRatio,
+      c: colors[(Math.random() * colors.length) | 0],
+      r: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.3,
+      life: 1,
+    });
+  }
+  if (!raf) tick();
+}
+function tick(){
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  parts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.45 * devicePixelRatio;
+    p.vx *= 0.99;
+    p.r += p.vr;
+    p.life -= 0.008;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.r);
+    ctx.fillStyle = p.c;
+    ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.6);
+    ctx.restore();
+  });
+  parts = parts.filter(p => p.life > 0 && p.y < cv.height + 40);
+  if (parts.length) { raf = requestAnimationFrame(tick); }
+  else { raf = null; ctx.clearRect(0, 0, cv.width, cv.height); }
+}
+</script>
+</body>
+</html>
